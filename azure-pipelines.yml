@@ -5,6 +5,7 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
+  name: Rakshi_CX
 
 steps:
 - task: Maven@3
