@@ -3,33 +3,14 @@ trigger:
     include:
       - dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5
 
-stages:
-- stage: BuildAndScan
-  displayName: 'Build and Scan Stage'
-  jobs:
-  - job: BuildAndScanJob
-    displayName: 'Build and Scan Job'
-    pool:
-      name: Rakshi_CX    # Custom agent pool (self-hosted)
-    steps:
-    - checkout: self
-      persistCredentials: true
-    - task: Maven@3
-      displayName: 'Maven Package'
-      inputs:
-        mavenPomFile: 'pom.xml'
-        mavenOptions: '-Xmx3072m'
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.11'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: true
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'package'
+pool:
+  name: Rakshi_CX  # Your self-hosted agent pool
 
-    - task: Checkmarx AST@3
-      displayName: 'Run Checkmarx One Scan'
-      inputs:
-        CheckmarxService: 'CxOne Connection'
-        projectName: 'Rakshhii/webgoat-cx'
-        branchName: 'dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5'
-        tenantName: 'cx_ind_internal_test'
+steps:
+- task: Checkmarx AST@3
+  displayName: 'Run Checkmarx One Scan'
+  inputs:
+    CheckmarxService: 'CxOne Connection'
+    projectName: 'Rakshhii/webgoat-cx'
+    branchName: 'dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5'
+    tenantName: 'cx_ind_internal_test'
