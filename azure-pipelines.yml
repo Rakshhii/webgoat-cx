@@ -1,22 +1,14 @@
-# Maven
-- task: Checkmarx AST@3
-  inputs:
-    CheckmarxService: 'CxOne Connection'
-    projectName: 'Rakshhii/webgoat-cx'
-    branchName: 'dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5'
-    tenantName: 'cx_ind_internal_test'
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
 trigger:
-- dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5
+  branches:
+    include:
+      - dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
 - task: Maven@3
+  displayName: 'Maven Package'
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
@@ -26,3 +18,11 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+
+- task: Checkmarx AST@3
+  displayName: 'Run Checkmarx One Scan'
+  inputs:
+    CheckmarxService: 'CxOne Connection'
+    projectName: 'Rakshhii/webgoat-cx'
+    branchName: 'dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5'
+    tenantName: 'cx_ind_internal_test'
