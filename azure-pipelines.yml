@@ -12,6 +12,8 @@ stages:
     pool:
       name: Rakshi_CX    # Custom agent pool (self-hosted)
     steps:
+    - checkout: self
+      persistCredentials: true
     - task: Maven@3
       displayName: 'Maven Package'
       inputs:
