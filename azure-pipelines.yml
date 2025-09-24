@@ -4,28 +4,34 @@ trigger:
       - dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5
 
 pool:
-  vmImage: 'windows-latest'  # Using Microsoft-hosted agent
+  name: Windows       # 👈 This is your global pool (self-hosted pool name)
 
-steps:
-  - powershell: |
-      Write-Host "Downloading CxOne CLI from GitHub release..."
-      $url = "https://github.com/Checkmarx/ast-cli/releases/download/v2.3.35/ast-cli_2.3.35_windows_x64.zip"
-      Invoke-WebRequest -Uri $url -OutFile "cxcli.zip"
-      Expand-Archive -Path "cxcli.zip" -DestinationPath "./cxcli" -Force
-      Copy-Item "./cxcli/cx.exe" .
-    displayName: 'Download Cx CLI from GitHub'
+stages:
+- stage: BuildAndScan
+  displayName: "Build and Run CxOne Scan"
+  jobs:
+  - job: RunScan
+    displayName: "Run CxOne CLI Scan"
+    steps:
+    - powershell: |
+        Write-Host "Downloading CxOne CLI from GitHub release..."
+        $url = "https://github.com/Checkmarx/ast-cli/releases/download/v2.3.35/ast-cli_2.3.35_windows_x64.zip"
+        Invoke-WebRequest -Uri $url -OutFile "cxcli.zip"
+        Expand-Archive -Path "cxcli.zip" -DestinationPath "./cxcli" -Force
+        Copy-Item "./cxcli/cx.exe" .
+      displayName: 'Download Cx CLI from GitHub'
 
-  - powershell: |
-      Write-Host "Authenticating with CxOne..."
-      .\cx.exe auth login --client-id "$(CX_CLIENT_ID)" --client-secret "$(CX_CLIENT_SECRET)" --tenant "$(CX_TENANT)"
-    displayName: 'Authenticate with CxOne'
+    - powershell: |
+        Write-Host "Authenticating with CxOne..."
+        .\cx.exe auth login --client-id "$(CX_CLIENT_ID)" --client-secret "$(CX_CLIENT_SECRET)" --tenant "$(CX_TENANT)"
+      displayName: 'Authenticate with CxOne'
 
-  - powershell: |
-      Write-Host "Running CxOne scan..."
-      .\cx.exe scan create --project-name "Rakshhii/webgoat-cx" --branch "dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5" --scan-types sast,sca
-    displayName: 'Run CxOne Scan'
+    - powershell: |
+        Write-Host "Running CxOne scan..."
+        .\cx.exe scan create --project-name "Rakshhii/webgoat-cx" --branch "dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5" --scan-types sast,sca
+      displayName: 'Run CxOne Scan'
 
-  - powershell: |
-      Write-Host "Fetching latest scan status..."
-      .\cx.exe scan list --project-name "Rakshhii/webgoat-cx" --branch "dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5"
-    displayName: 'Check Scan Status'
+    - powershell: |
+        Write-Host "Fetching latest scan status..."
+        .\cx.exe scan list --project-name "Rakshhii/webgoat-cx" --branch "dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5"
+      displayName: 'Check Scan Status'
