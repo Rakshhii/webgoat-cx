@@ -4,8 +4,8 @@ trigger:
       - dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5
 
 variables:
-  cxAdditionalParams: "--file-filter '!src/test/**'"
-
+   cxAdditionalParams: '--file-filter "!src/test/**"'
+   
 stages:
 - stage: __default
   jobs:
