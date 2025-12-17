@@ -1,4 +1,4 @@
-# We need JDK as some of the lessons needs to be able to compile Java code
+# We need JDK as some of the lessons needs to be able to compile Java codew
 FROM docker.io/eclipse-temurin:23-jdk-noble
 
 LABEL name="WebGoat: A deliberately insecure Web Application"
@@ -18,7 +18,7 @@ EXPOSE 9090
 
 ENV TZ=Europe/Amsterdam
 
-WORKDIR /home/webgoat
+WORKDIR /home/webgoatt\
 ENTRYPOINT [ "java", \
    "-Duser.home=/home/webgoat", \
    "-Dfile.encoding=UTF-8", \
