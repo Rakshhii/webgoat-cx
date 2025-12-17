@@ -11,7 +11,7 @@ stages:
   jobs:
   - job: Job
     pool:
-      name: Default
+      name: Azure Pipelines
     steps:
     - task: Checkmarx AST@3
       displayName: 'Run Checkmarx One Scan'
