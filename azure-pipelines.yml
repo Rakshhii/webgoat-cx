@@ -16,7 +16,7 @@ stages:
     - task: Checkmarx AST@3
       displayName: 'Run Checkmarx One Scan'
       inputs:
-        CheckmarxService: 'CxOne Connection'
+        CheckmarxService: 'Testing'
         projectName: 'Rakshhii/webgoat-cx'
         branchName: 'dependabot/maven/org.springframework.boot-spring-boot-starter-parent-3.4.5'
         tenantName: 'cx_ind_internal_test'
